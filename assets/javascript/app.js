@@ -2,13 +2,14 @@ var correctAnswers = 0;
 var wrongAnswers = 0;
 var unanswered = 0;
 
+var timer
+
 var question1 = {
     asking: "Which of the following is NOT a member of ABBA?",
     right: "Astrid",
     wrong: ["Benny", "Björn", "Frida"],
-    correct: "Astrid is not the name of a member of ABBA."
-    //an image for the answer reveal page
-
+    correct: "ABBA stands for Agnetha, Björn, Benny, and Anni-Frid (Frida).",
+    srcPic: "assets/images/abba1.jpg",
 }
 
 var question2 = {
@@ -17,8 +18,8 @@ var question2 = {
     wrong1: "Dancing Queen",
     wrong2: "Voulez-vous",
     wrong3: "Two For the Price of One",
-    correct: "People Need Love was ABBA's first single to chart in the UK."
-    //an image for the answer reveal page
+    correct: "People Need Love was ABBA's first single to chart in the UK.",
+    srcPic: "../assets/images/abba2.jpg",
 
 }
 
@@ -26,6 +27,7 @@ var question2 = {
 var questionArray = [question1, question2]
 
 function questionSetup(object) {
+    //displays the timer in id timer
     //displays the question in each object in the array
     $("#question").text(object.asking);
     //creates divs on the DOM for the right answer..
@@ -54,26 +56,38 @@ function questionSetup(object) {
         if (this.id === "correct") {
             console.log("YEP");
             correctAnswers++;
-            goodGuess();
+            $("#question").text("Well done!");
+            var winnerPic = $("<img>").attr("src", object.srcPic);
+            $("#buttons").empty();
+            winnerPic.appendTo("#buttons");
             //and move on to the next question
         }
 
-        else if ( $(this).hasClass("wrong")) {
+        else if ($(this).hasClass("wrong")) {
             console.log("NOPE");
             wrongAnswers++;
             badGuess();
             //and move on to the next question
         }
 
-        //else if the timer runs out
-        // outtaTime();
+
     })
 
+    //times out the display after thirty seconds
+    timer = setTimeout(function () {
+        console.log("OUTTA TIME");
+    }, 30 * 1000)
+
+
+
+
 }
 
-function goodGuess() {
-    //loads in yep and an image
-}
+// function goodGuess() {
+//     $("#question").text("Well done!");
+//     var winnerPic = $("<img>").attr("src", object.srcPic);
+//     winnerPic.appendTo("#buttons");
+// }
 
 function badGuess() {
     //loads in nope and the right answer
