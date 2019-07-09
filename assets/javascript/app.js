@@ -51,11 +51,33 @@ var questionArray = [
 
 
 function questionSetup() {
-    //displays the timer in id timer
     //displays the question in each object in the array
     if (counter >= questionArray.length) {
         return;
     }
+    //starts the counter
+    //instead of clearPage, go to the timeout page?
+    timer = setTimeout(clearPage, 30000);
+    var timeleft = 30;
+    var pageTimer = setInterval(function () {
+        $("#timer").text("Time Left: " + timeleft);
+        timeleft--;
+        if (timeleft <= 0) {
+            clearInterval(pageTimer);
+            unanswered++;
+            clearPage();
+            $("#question").text("Out of time! " + questionArray[counter].correction);
+            makeContinueButton();
+            var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
+            $("#buttons").empty();
+            addPic.appendTo("#buttons");
+            $("#question").on("click", function () {
+                counter++;
+                clearPage();
+            })
+        }
+    }, 1000);
+
     $("#question").text(questionArray[counter].asking);
     //creates divs on the DOM for the right answer..
     var correctButton = $("<div>");
@@ -83,51 +105,41 @@ function questionSetup() {
     $(".answerChoice").on("click", function () {
         if (this.id === "correct") {
             console.log("YEP");
+            clearInterval(pageTimer);
             correctAnswers++;
             clearPage();
-            $("#timer").text("Well done! "+questionArray[counter].correction);
-            $("#question").text("Click to continue...");
+            $("#question").text("Well done! " + questionArray[counter].correction);
+            makeContinueButton();
             var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
             $("#buttons").empty();
             addPic.appendTo("#buttons");
-            $("#question").on("click", function() {
+            $("#continue").on("click", function () {
                 counter++;
                 clearPage();
+                questionSetup();
             })
         }
 
         else if ($(this).hasClass("wrong")) {
             console.log("NOPE");
+            clearInterval(pageTimer);
             wrongAnswers++;
             clearPage();
             $("#question").text(questionArray[counter].correction);
             var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
             $("#buttons").empty();
             addPic.appendTo("#buttons");
-            $("#timer").text("Nope! "+questionArray[counter].correction);
-            $("#question").text("Click to continue...");
+            $("#question").text("Nope! " + questionArray[counter].correction);
+            makeContinueButton();
             var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
             $("#buttons").empty();
             addPic.appendTo("#buttons");
-            $("#question").on("click", function() {
+            $("#continue").on("click", function () {
                 counter++;
                 clearPage();
-            })
-        }
+                questionSetup();
 
-        else {
-            unanswered++;
-            clearPage();
-            $("#timer").text("Out of time! "+questionArray[counter].correction);
-            $("#question").text("Click to continue...");
-            var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
-            $("#buttons").empty();
-            addPic.appendTo("#buttons");
-            $("#question").on("click", function() {
-                counter++;
-                clearPage();
             })
-
         }
 
 
@@ -140,14 +152,22 @@ function questionSetup() {
 
 function clearPage() {
     $("#timer").empty();
-    $("#question").empty();
+    $("#questionBox").empty();
+    $("<div>").attr("id", "question").appendTo("#questionBox");
     $("#buttons").empty();
 }
 
+function makeContinueButton() {
+    var continueButton = $("<div>")
+    continueButton.attr("id", "continue").text("Click to continue...").appendTo("#questionBox");
+}
 
 function resetGame() {
-    //sets all three variables to zero
-    //starts the questions over
+    clearPage();
+    unanswered = 0;
+    correctAnswers = 0;
+    wrongAnswers = 0;
+
 }
 
 // for (var j = 0; j < questionArray.length; j++) {
