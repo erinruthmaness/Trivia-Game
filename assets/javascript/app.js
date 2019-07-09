@@ -58,7 +58,7 @@ function questionSetup() {
         $("<div> Correct Answers: " + correctAnswers + "</div>").appendTo("#questionBox");
         $("<div> Incorrect Answers: " + wrongAnswers + "</div>").appendTo("#questionBox");;
         $("<div> Unanswered: " + unanswered + "</div>").appendTo("#questionBox");;
-        $("<div> Click to Try Again! </div>").appendTo("#buttons").on("click", function () {
+        $("<div id='continue'> Click to Try Again! </div>").appendTo("#buttons").on("click", function () {
             resetGame();
         })
         return;
@@ -120,7 +120,6 @@ function questionSetup() {
             $("#question").text(questionArray[counter].correction);
             $("#question").text("Nope! " + questionArray[counter].correction);
             makeContinueButton();
-
 
         }
 
