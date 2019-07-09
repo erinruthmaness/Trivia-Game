@@ -49,16 +49,21 @@ var questionArray = [
 ]
 
 
-
 function questionSetup() {
     //displays the question in each object in the array
     if (counter >= questionArray.length) {
+        clearPage();
+        clearInterval(pageTimer);
+        $("#timer").text("That's it!")
+        $("<div> Correct Answers: " + correctAnswers + "</div>").appendTo("#questionBox");
+        $("<div> Incorrect Answers: " + wrongAnswers + "</div>").appendTo("#questionBox");;
+        $("<div> Unanswered: " + unanswered + "</div>").appendTo("#questionBox");;
+        $("<div> Click to Try Again! </div>").appendTo("#buttons").on("click", function () {
+            resetGame();
+        })
         return;
     }
-    //starts the counter
-    //instead of clearPage, go to the timeout page?
-    timer = setTimeout(clearPage, 30000);
-    var timeleft = 30;
+    var timeleft = 14;
     var pageTimer = setInterval(function () {
         $("#timer").text("Time Left: " + timeleft);
         timeleft--;
@@ -68,13 +73,7 @@ function questionSetup() {
             clearPage();
             $("#question").text("Out of time! " + questionArray[counter].correction);
             makeContinueButton();
-            var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
-            $("#buttons").empty();
-            addPic.appendTo("#buttons");
-            $("#question").on("click", function () {
-                counter++;
-                clearPage();
-            })
+
         }
     }, 1000);
 
@@ -110,14 +109,7 @@ function questionSetup() {
             clearPage();
             $("#question").text("Well done! " + questionArray[counter].correction);
             makeContinueButton();
-            var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
-            $("#buttons").empty();
-            addPic.appendTo("#buttons");
-            $("#continue").on("click", function () {
-                counter++;
-                clearPage();
-                questionSetup();
-            })
+
         }
 
         else if ($(this).hasClass("wrong")) {
@@ -126,40 +118,38 @@ function questionSetup() {
             wrongAnswers++;
             clearPage();
             $("#question").text(questionArray[counter].correction);
-            var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
-            $("#buttons").empty();
-            addPic.appendTo("#buttons");
             $("#question").text("Nope! " + questionArray[counter].correction);
             makeContinueButton();
-            var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
-            $("#buttons").empty();
-            addPic.appendTo("#buttons");
-            $("#continue").on("click", function () {
-                counter++;
-                clearPage();
-                questionSetup();
 
-            })
+
         }
-
 
     })
 
-
-
 }
 
-
 function clearPage() {
-    $("#timer").empty();
+    $("#timer").text("Time Left: 15");
     $("#questionBox").empty();
     $("<div>").attr("id", "question").appendTo("#questionBox");
     $("#buttons").empty();
 }
 
 function makeContinueButton() {
+    //erases existing answer buttons
+    $("#buttons").empty();
+    //makes one continue button
     var continueButton = $("<div>")
     continueButton.attr("id", "continue").text("Click to continue...").appendTo("#questionBox");
+    $("#continue").on("click", function () {
+        counter++;
+        console.log(counter);
+        clearPage();
+        questionSetup();
+    })
+    //makes an img and sticks it in there
+    var addPic = $("<img>").attr("src", questionArray[counter].srcPic);
+    addPic.appendTo("#buttons");
 }
 
 function resetGame() {
@@ -167,13 +157,11 @@ function resetGame() {
     unanswered = 0;
     correctAnswers = 0;
     wrongAnswers = 0;
+    counter = 0;
+    questionSetup();
 
 }
 
-// for (var j = 0; j < questionArray.length; j++) {
-//     questionSetup(questionArray[j]);
-// }
 
 questionSetup();
-// counter++;
-// setInterval(questionSetup, 30000);
+
